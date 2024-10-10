@@ -11,9 +11,9 @@ fn formattime(anchor: DateTime<Local>)->String{
     let eminutes = elapsed.num_minutes();
     let eseconds = elapsed.num_seconds();
 
-    let ohours = "00";
-    let ominutes = "00";
-    let oseconds = "00";
+    let ohours = if ehours<10{format!("0{}", ehours)} else {ehours.to_string()};
+    let ominutes = if eminutes<10{format!("0{}", eminutes)} else {eminutes.to_string()};
+    let oseconds = if eseconds<10{format!("0{}", eseconds)} else {eseconds.to_string()};
 
     format!("{}:{}:{}", ohours, ominutes, oseconds)
 }
