@@ -19,7 +19,9 @@ fn formattime(anchor: DateTime<Local>)->String{
 }
 
 fn main() {
-    //ffi::SetConfigFlags(ffi::ConfigFlags::FLAG_WINDOW_RESIZABLE);
+    unsafe{
+        ffi::SetConfigFlags(ffi::ConfigFlags::FLAG_WINDOW_RESIZABLE as u32);
+    }
     let (mut rl, thread) = raylib::init()
         .size(WIDTH, HEIGHT)
         .title("tima")
@@ -39,9 +41,11 @@ fn main() {
             }
         }
         let twid = rl.measure_text(thms.as_str(), font);
+        let cwid = rl.get_screen_width();
+        let chit = rl.get_screen_height();
         let mut d = rl.begin_drawing(&thread);
 
         d.clear_background(Color::BLACK);
-        d.draw_text(thms.as_str(), WIDTH/2 - twid/2, HEIGHT/2, font, Color::WHITE);
+        d.draw_text(thms.as_str(), cwid/2 - twid/2, chit/2, font, Color::WHITE);
     }
 }
