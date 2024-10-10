@@ -23,8 +23,10 @@ fn elapsedtime(anchor: DateTime<Local>)->String{
 }
 
 fn timemvmnt(pos: ffi::Vector2)->ffi::Vector2{
-    let new_pos = pos.clone();
-    new_pos.x = 1
+    let mut new_pos = pos.clone();
+    new_pos.x += 1.0;
+    new_pos.y += 1.0;
+    new_pos
 }
 
 fn main() {
@@ -48,6 +50,15 @@ fn main() {
 
     rl.set_target_fps(60);
 
+
+    let cwid = rl.get_screen_width();
+    let chit = rl.get_screen_height();
+
+    let pos = ffi::Vector2{
+        x:(cwid/2 - twid/2) as f32,
+        y:(chit/2-thi/2) as f32
+    };
+
     while !rl.window_should_close() {
         let thms = elapsedtime(init);
 
@@ -68,13 +79,7 @@ fn main() {
         let twid = rl.measure_text(thms.as_str(), font_size);
         let thi = font_size;
 
-        let cwid = rl.get_screen_width();
-        let chit = rl.get_screen_height();
-
-        let pos = ffi::Vector2{
-            x:(cwid/2 - twid/2) as f32,
-            y:(chit/2-thi/2) as f32
-        };
+        let pos = timemvmnt(pos);
 
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::BLACK);
