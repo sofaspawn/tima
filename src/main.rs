@@ -1,17 +1,47 @@
 use ffi::IsKeyDown;
 use raylib::prelude::*;
+use chrono::prelude::*;
+
+const WIDTH:i32 = 2000;
+const HEIGHT:i32 = 1000;
+
+fn formattime(anchor: DateTime<Local>)->String{
+    let elapsed = Local::now() - anchor;
+    let ehours = elapsed.num_hours();
+    let eminutes = elapsed.num_minutes();
+    let eseconds = elapsed.num_seconds();
+
+    let ohours = "00";
+    let ominutes = "00";
+    let oseconds = "00";
+
+    format!("{}:{}:{}", ohours, ominutes, oseconds)
+}
 
 fn main() {
+    //ffi::SetConfigFlags(ffi::ConfigFlags::FLAG_WINDOW_RESIZABLE);
     let (mut rl, thread) = raylib::init()
-        .size(1000, 1000)
+        .size(WIDTH, HEIGHT)
         .title("tima")
         .build();
 
+    let font = 200;
+    let init = Local::now();
+
+    rl.set_target_fps(60);
+
     while !rl.window_should_close() {
-        IsKeyDown(KeyboardKey::KEY_Q as i32);
+        let thms = formattime(init);
+
+        unsafe{
+            if IsKeyDown(KeyboardKey::KEY_Q as i32){
+                break;
+            }
+        }
+        let twid = rl.measure_text(thms.as_str(), font);
         let mut d = rl.begin_drawing(&thread);
 
         d.clear_background(Color::BLACK);
-        d.draw_text("Hello, world!", 12, 12, 20, Color::BLACK);
+        d.draw_text(thms.as_str(), WIDTH/2 - twid/2, HEIGHT/2, font, Color::WHITE);
     }
 }

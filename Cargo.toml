@@ -5,4 +5,4 @@ edition = "2021"
 
 [dependencies]
 raylib = { version = "5.0" }
-
+chrono = "0.4.38"
