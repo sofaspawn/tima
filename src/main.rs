@@ -15,9 +15,9 @@ fn formattime(anchor: DateTime<Local>)->String{
     let mdiv = (eminutes/60) as i64;
     let sdiv = (eseconds/60) as i64;
 
-    let ohours = if ehours<10{format!("0{}", ehours)} else if hdiv>0{(ehours - hdiv*60).to_string()} else {ehours.to_string()};
-    let ominutes = if eminutes<10{format!("0{}", eminutes)} else if mdiv>0{(eminutes - mdiv*60).to_string()} else {eminutes.to_string()};
-    let oseconds = if eseconds<10{format!("0{}", eseconds)} else if sdiv>0{(eseconds - sdiv*60).to_string()} else {eseconds.to_string()};
+    let ohours = if (ehours - hdiv*60)<10{format!("0{}", ehours - hdiv*60)} else if hdiv>0{(ehours - hdiv*60).to_string()} else {ehours.to_string()};
+    let ominutes = if (eminutes - mdiv*60)<10{format!("0{}", eminutes - mdiv*60)} else if mdiv>0{(eminutes - mdiv*60).to_string()} else {eminutes.to_string()};
+    let oseconds = if (eseconds - sdiv*60)<10{format!("0{}", eseconds - sdiv*60)} else if sdiv>0{(eseconds - sdiv*60).to_string()} else {eseconds.to_string()};
 
     format!("{}:{}:{}", ohours, ominutes, oseconds)
 }
