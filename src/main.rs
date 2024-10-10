@@ -5,7 +5,7 @@ use chrono::prelude::*;
 const WIDTH:i32 = 2000;
 const HEIGHT:i32 = 1000;
 
-fn formattime(anchor: DateTime<Local>)->String{
+fn elapsedtime(anchor: DateTime<Local>)->String{
     let elapsed = Local::now() - anchor;
     let ehours = elapsed.num_hours();
     let eminutes = elapsed.num_minutes();
@@ -22,7 +22,15 @@ fn formattime(anchor: DateTime<Local>)->String{
     format!("{}:{}:{}", ohours, ominutes, oseconds)
 }
 
+fn timemvmnt(pos: ffi::Vector2)->ffi::Vector2{
+    let new_pos = pos.clone();
+    new_pos.x = 1
+}
+
 fn main() {
+
+    let font_path = "/home/m1nus/.fonts/RobotoMono-Bold.ttf";
+
     unsafe{
         ffi::SetConfigFlags(ffi::ConfigFlags::FLAG_WINDOW_RESIZABLE as u32);
     }
@@ -31,15 +39,17 @@ fn main() {
         .title("tima")
         .build();
 
-    let base_font = 200;
+    let font = rl.load_font(&thread, font_path).unwrap();
+
+    let base_font = 400;
     let mut scale = 1;
-    let font = base_font * scale;
+    let font_size = base_font * scale;
     let init = Local::now();
 
     rl.set_target_fps(60);
 
     while !rl.window_should_close() {
-        let thms = formattime(init);
+        let thms = elapsedtime(init);
 
         unsafe{
             if IsKeyDown(KeyboardKey::KEY_Q as i32){
@@ -54,12 +64,20 @@ fn main() {
                 }
             }
         }
-        let twid = rl.measure_text(thms.as_str(), font);
+
+        let twid = rl.measure_text(thms.as_str(), font_size);
+        let thi = font_size;
+
         let cwid = rl.get_screen_width();
         let chit = rl.get_screen_height();
-        let mut d = rl.begin_drawing(&thread);
 
+        let pos = ffi::Vector2{
+            x:(cwid/2 - twid/2) as f32,
+            y:(chit/2-thi/2) as f32
+        };
+
+        let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::BLACK);
-        d.draw_text(thms.as_str(), cwid/2 - twid/2, chit/2, font, Color::WHITE);
+        d.draw_text_ex(&font, thms.as_str(), pos, font_size as f32, 20.0,Color::WHITE);
     }
 }
