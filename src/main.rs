@@ -30,12 +30,12 @@ fn timemvmnt(pos: ffi::Vector2)->ffi::Vector2{
 }
 
 fn main() {
-
     let font_path = "/home/m1nus/.fonts/RobotoMono-Bold.ttf";
 
     unsafe{
         ffi::SetConfigFlags(ffi::ConfigFlags::FLAG_WINDOW_RESIZABLE as u32);
     }
+
     let (mut rl, thread) = raylib::init()
         .size(WIDTH, HEIGHT)
         .title("tima")
