@@ -22,15 +22,17 @@ fn elapsedtime(anchor: DateTime<Local>)->String{
     format!("{}:{}:{}", ohours, ominutes, oseconds)
 }
 
+/*
 fn timemvmnt(pos: ffi::Vector2)->ffi::Vector2{
     let mut new_pos = pos.clone();
     new_pos.x += 1.0;
     new_pos.y += 1.0;
     new_pos
 }
+*/
 
 fn main() {
-    let font_path = "/home/m1nus/.fonts/RobotoMono-Bold.ttf";
+    let font_path = "/home/m1nus/.fonts/Monaco.ttf";
 
     unsafe{
         ffi::SetConfigFlags(ffi::ConfigFlags::FLAG_WINDOW_RESIZABLE as u32);
@@ -43,21 +45,21 @@ fn main() {
 
     let font = rl.load_font(&thread, font_path).unwrap();
 
-    let base_font = 400;
-    let mut scale = 1;
-    let font_size = base_font * scale;
+    let mut scale = 1.0;
+    let font_size = 40;
     let init = Local::now();
 
-    rl.set_target_fps(60);
+    let mut cwid = rl.get_screen_width();
+    let mut chit = rl.get_screen_height();
 
-
-    let cwid = rl.get_screen_width();
-    let chit = rl.get_screen_height();
-
-    let pos = ffi::Vector2{
-        x:(cwid/2 - twid/2) as f32,
-        y:(chit/2-thi/2) as f32
+    let mut camera = ffi::Camera2D{
+        offset: ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32}, 
+        target: ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32},
+        rotation: 0.0,
+        zoom: 1.0
     };
+
+    rl.set_target_fps(60);
 
     while !rl.window_should_close() {
         let thms = elapsedtime(init);
@@ -67,22 +69,42 @@ fn main() {
                 break;
             }
             if IsKeyDown(KeyboardKey::KEY_EQUAL as i32){
-                scale+=1;
+                scale+=0.2;
+                //println!("{scale}");
             }
             if IsKeyDown(KeyboardKey::KEY_MINUS as i32){
-                if scale>1{
-                    scale-=1;
+                if scale>0.2{
+                    scale-=0.2;
                 }
+                //println!("{scale}");
             }
         }
 
         let twid = rl.measure_text(thms.as_str(), font_size);
         let thi = font_size;
 
-        let pos = timemvmnt(pos);
+        cwid = rl.get_screen_width();
+        chit = rl.get_screen_height();
 
+        let pos = ffi::Vector2{
+            x:((cwid - twid)/2) as f32,
+            y:((chit-thi)/2) as f32,
+        };
+
+        println!("{scale}");
+        camera.zoom = scale as f32;
+       //camera.target = ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32};
+       camera.offset = ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32};
+       camera.target = pos;
+
+        unsafe{
+            ffi::BeginMode2D(camera);
+        }
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::BLACK);
-        d.draw_text_ex(&font, thms.as_str(), pos, font_size as f32, 20.0,Color::WHITE);
+        d.draw_text_ex(&font, thms.as_str(), pos, font_size as f32, 10.0, Color::WHITE);
+        unsafe{
+            ffi::EndMode2D();
+        }
     }
 }
