@@ -93,16 +93,17 @@ fn main() {
 
         println!("{scale}");
         camera.zoom = scale as f32;
-       //camera.target = ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32};
-       camera.offset = ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32};
-       camera.target = pos;
+        //camera.target = ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32};
+        //camera.offset = ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32};
+        camera.offset = pos;
+        camera.target = pos;
 
         unsafe{
             ffi::BeginMode2D(camera);
         }
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::BLACK);
-        d.draw_text_ex(&font, thms.as_str(), pos, font_size as f32, 10.0, Color::WHITE);
+        d.draw_text_ex(&font, thms.as_str(), pos, font_size as f32 * scale, 10.0, Color::WHITE);
         unsafe{
             ffi::EndMode2D();
         }
