@@ -5,6 +5,7 @@ TODO:
 - [x] display timer
 - [x] implement scaling
 - [x] custom font
-- [ ] some movement
+- [x] some movement
+- [ ] read user args from terminal
 
 inspired by -> [tsoding's sowon](https://github.com/tsoding/sowon)

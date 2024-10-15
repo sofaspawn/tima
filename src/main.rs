@@ -1,4 +1,5 @@
 use ffi::IsKeyDown;
+use rand::Rng;
 use raylib::prelude::*;
 use chrono::prelude::*;
 
@@ -22,14 +23,13 @@ fn elapsedtime(anchor: DateTime<Local>)->String{
     format!("{}:{}:{}", ohours, ominutes, oseconds)
 }
 
-/*
-fn timemvmnt(pos: ffi::Vector2)->ffi::Vector2{
-    let mut new_pos = pos.clone();
-    new_pos.x += 1.0;
-    new_pos.y += 1.0;
-    new_pos
+fn timemvmnt(counter:i32, pos: &mut ffi::Vector2){
+    //agressive shaking
+    if counter%1==0{ // counter for customization
+        pos.x += rand::thread_rng().gen_range(-20..21) as f32;
+        pos.y += rand::thread_rng().gen_range(-20..21) as f32;
+    }
 }
-*/
 
 fn main() {
     let font_path = "/home/m1nus/.fonts/Monaco.ttf";
@@ -45,7 +45,7 @@ fn main() {
 
     let font = rl.load_font(&thread, font_path).unwrap();
 
-    let mut scale = 100.0;
+    let mut scale = 400.0;
     let font_size = 1;
     let init = Local::now();
 
@@ -60,6 +60,8 @@ fn main() {
     };
 
     rl.set_target_fps(60);
+
+    let mut vib_counter = 0;
 
     while !rl.window_should_close() {
         let thms = elapsedtime(init);
@@ -79,7 +81,7 @@ fn main() {
                 //println!("{scale}");
             }
             if IsKeyDown(KeyboardKey::KEY_ZERO as i32){
-                scale = 100.0;
+                scale = 400.0;
             }
         }
 
@@ -89,16 +91,20 @@ fn main() {
         cwid = rl.get_screen_width();
         chit = rl.get_screen_height();
 
-        let pos = ffi::Vector2{
+        let mut pos = ffi::Vector2{
             x:((cwid - twid)/2) as f32,
             y:((chit-thi)/2) as f32,
         };
+
+        timemvmnt(vib_counter, &mut pos);
 
         camera.zoom = scale as f32;
         //camera.target = ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32};
         //camera.offset = ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32};
         camera.offset = pos;
         camera.target = pos;
+
+        vib_counter+=1;
 
         unsafe{
             ffi::BeginMode2D(camera);
