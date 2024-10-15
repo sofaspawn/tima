@@ -6,6 +6,7 @@ TODO:
 - [x] implement scaling
 - [x] custom font
 - [x] some movement
-- [ ] read user args from terminal
+- [x] read user args from terminal
+- [ ] display clock
 
 inspired by -> [tsoding's sowon](https://github.com/tsoding/sowon)

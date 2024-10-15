@@ -42,10 +42,21 @@ fn handle_args(args: Vec<String>)->Option<String>{
     }
 }
 
+fn clock(){
+    println!("{:#?}",chrono::Local::now());
+}
+
 fn main() {
     let args = env::args().collect::<Vec<_>>();
     let mode = handle_args(args);
+
+    println!("{}", mode.clone().unwrap_or("USAGE:./app clock".to_string()));
+
+    if &mode==&Some("clock".to_string()){
+    }
+
     println!("{}",mode.unwrap_or("Crashed".to_string()));
+
     let font_path = "/home/m1nus/.fonts/Monaco.ttf";
 
     unsafe{
