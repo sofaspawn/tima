@@ -1,5 +1,6 @@
 use ffi::IsKeyDown;
 use rand::Rng;
+use std::{env, error::Error};
 use raylib::prelude::*;
 use chrono::prelude::*;
 
@@ -31,7 +32,20 @@ fn timemvmnt(counter:i32, pos: &mut ffi::Vector2){
     }
 }
 
+fn handle_args(args: Vec<String>)->Option<String>{
+    if args.len()>2{
+        return None;
+    } else if args.len()==2 {
+        return Some(args[1].clone());
+    } else {
+        return Some(args[0].clone());
+    }
+}
+
 fn main() {
+    let args = env::args().collect::<Vec<_>>();
+    let mode = handle_args(args);
+    println!("{}",mode.unwrap_or("Crashed".to_string()));
     let font_path = "/home/m1nus/.fonts/Monaco.ttf";
 
     unsafe{
