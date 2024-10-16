@@ -32,37 +32,17 @@ fn timemvmnt(counter:i32, pos: &mut ffi::Vector2){
     }
 }
 
-fn handle_args(args: Vec<String>)->Option<String>{
+fn handle_args(args: Vec<String>)->Option<&str>{
     if args.len()>2{
         return None;
     } else if args.len()==2 {
-        return Some(args[1].clone());
+        return Some(args[1].clone().as_str());
     } else {
-        return Some(args[0].clone());
+        return Some(&args[0].as_str());
     }
 }
 
-fn clock(){
-    println!("{:#?}",chrono::Local::now());
-}
-
-fn main() {
-    let args = env::args().collect::<Vec<_>>();
-    let mode = handle_args(args);
-
-    println!("{}", mode.clone().unwrap_or("USAGE:./app clock".to_string()));
-
-    if &mode==&Some("clock".to_string()){
-    }
-
-    println!("{}",mode.unwrap_or("Crashed".to_string()));
-
-    let font_path = "/home/m1nus/.fonts/Monaco.ttf";
-
-    unsafe{
-        ffi::SetConfigFlags(ffi::ConfigFlags::FLAG_WINDOW_RESIZABLE as u32);
-    }
-
+fn stopwatch(font_path: &str){
     let (mut rl, thread) = raylib::init()
         .size(WIDTH, HEIGHT)
         .title("tima")
@@ -140,5 +120,32 @@ fn main() {
         unsafe{
             ffi::EndMode2D();
         }
+    }
+}
+
+fn clock(){
+    println!("{:#?}",chrono::Local::now());
+}
+
+fn main() {
+    let args = env::args().collect::<Vec<_>>();
+    let mode = handle_args(args);
+
+    println!("{}", mode.clone().unwrap_or("USAGE:./app clock".to_string()));
+
+    let font_path = "/home/m1nus/.fonts/Monaco.ttf";
+
+    unsafe{
+        ffi::SetConfigFlags(ffi::ConfigFlags::FLAG_WINDOW_RESIZABLE as u32);
+    }
+
+    match mode{
+        Some(x) => 
+            match x{
+                "clock" => clock(),
+                _ => stopwatch(font_path),
+            }
+        ,
+        None => ()
     }
 }
