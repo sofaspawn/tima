@@ -8,6 +8,7 @@ TODO:
 - [x] some movement
 - [x] read user args from terminal
 - [x] display clock
-- [ ] change mode based on user args
+- [x] change mode based on user args
+- [ ] display clock on raylib window
 
 inspired by -> [tsoding's sowon](https://github.com/tsoding/sowon)
