@@ -37,6 +37,7 @@ fn handle_args(args: Vec<String>)->Option<&str>{
         return None;
     } else if args.len()==2 {
         return Some(args[1].clone().as_str());
+
     } else {
         return Some(&args[0].as_str());
     }

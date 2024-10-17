@@ -7,6 +7,7 @@ TODO:
 - [x] custom font
 - [x] some movement
 - [x] read user args from terminal
-- [ ] display clock
+- [x] display clock
+- [ ] change mode based on user args
 
 inspired by -> [tsoding's sowon](https://github.com/tsoding/sowon)
