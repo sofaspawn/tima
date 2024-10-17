@@ -1,6 +1,6 @@
 use ffi::IsKeyDown;
 use rand::Rng;
-use std::{env, error::Error};
+use std::env;
 use raylib::prelude::*;
 use chrono::prelude::*;
 
@@ -32,14 +32,13 @@ fn timemvmnt(counter:i32, pos: &mut ffi::Vector2){
     }
 }
 
-fn handle_args(args: Vec<String>)->Option<&str>{
+fn handle_args(args: &Vec<String>)->Option<String>{
     if args.len()>2{
         return None;
     } else if args.len()==2 {
-        return Some(args[1].clone().as_str());
-
+        return Some(args[1].clone());
     } else {
-        return Some(&args[0].as_str());
+        return Some(args[0].clone());
     }
 }
 
@@ -130,9 +129,9 @@ fn clock(){
 
 fn main() {
     let args = env::args().collect::<Vec<_>>();
-    let mode = handle_args(args);
+    let mode = handle_args(&args);
 
-    println!("{}", mode.clone().unwrap_or("USAGE:./app clock".to_string()));
+    //println!("{}", mode.clone().unwrap_or("USAGE:./app clock".to_string()));
 
     let font_path = "/home/m1nus/.fonts/Monaco.ttf";
 
@@ -142,7 +141,7 @@ fn main() {
 
     match mode{
         Some(x) => 
-            match x{
+            match x.as_str(){
                 "clock" => clock(),
                 _ => stopwatch(font_path),
             }
