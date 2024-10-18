@@ -9,6 +9,7 @@ TODO:
 - [x] read user args from terminal
 - [x] display clock
 - [x] change mode based on user args
+- [x] change color space
 - [ ] display clock on raylib window
 
 inspired by -> [tsoding's sowon](https://github.com/tsoding/sowon)

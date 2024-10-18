@@ -113,6 +113,8 @@ fn main() {
 
     let mut vib_counter = 0;
 
+    let mut color = Color::WHITE;
+
     while !rl.window_should_close() {
         let thms = elapsedtime(init);
 
@@ -133,6 +135,9 @@ fn main() {
             if IsKeyDown(KeyboardKey::KEY_ZERO as i32){
                 scale = 400.0;
             }
+            if IsKeyDown(KeyboardKey::KEY_SPACE as i32){
+                color = Color::PINK;
+            }
         }
 
         let twid = rl.measure_text(thms.as_str(), (font_size as f32 * scale) as i32);
@@ -149,8 +154,6 @@ fn main() {
         timemvmnt(vib_counter, &mut pos);
 
         camera.zoom = scale as f32;
-        //camera.target = ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32};
-        //camera.offset = ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32};
         camera.offset = pos;
         camera.target = pos;
 
@@ -161,7 +164,7 @@ fn main() {
         }
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::BLACK);
-        d.draw_text_ex(&font, thms.as_str(), pos, font_size as f32 * scale, 10.0, Color::WHITE);
+        d.draw_text_ex(&font, thms.as_str(), pos, font_size as f32 * scale, 10.0, color);
         unsafe{
             ffi::EndMode2D();
         }
