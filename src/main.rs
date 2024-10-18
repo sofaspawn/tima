@@ -46,77 +46,13 @@ fn stopwatch(font_path: &str){
     //let thms = elapsedtime(init);
 }
 
-fn clock(){
-    loop{
-        let local = chrono::Local::now();
-        let ehours = local.hour();
-        let eminutes = local.minute();
-        let eseconds = local.second();
-
-        let hdiv = (ehours/60) as u32;
-        let mdiv = (eminutes/60) as u32;
-        let sdiv = (eseconds/60) as u32;
-
-        let ohours = if (ehours - hdiv*60)<10{format!("0{}", ehours - hdiv*60)} else if hdiv>0{(ehours - hdiv*60).to_string()} else {ehours.to_string()};
-        let ominutes = if (eminutes - mdiv*60)<10{format!("0{}", eminutes - mdiv*60)} else if mdiv>0{(eminutes - mdiv*60).to_string()} else {eminutes.to_string()};
-        let oseconds = if (eseconds - sdiv*60)<10{format!("0{}", eseconds - sdiv*60)} else if sdiv>0{(eseconds - sdiv*60).to_string()} else {eseconds.to_string()};
-
-        let disptime = format!("{}:{}:{}", ohours, ominutes, oseconds);
-        println!("{disptime}");
-    }
-}
-
-fn main() {
-    let args = env::args().collect::<Vec<_>>();
-    let mode = handle_args(&args);
-
-    //println!("{}", mode.clone().unwrap_or("USAGE:./app clock".to_string()));
-
-    let font_path = "/home/m1nus/.fonts/Monaco.ttf";
-
-    unsafe{
-        ffi::SetConfigFlags(ffi::ConfigFlags::FLAG_WINDOW_RESIZABLE as u32);
-    }
-
-    match mode{
-        Some(x) => 
-            match x.as_str(){
-                "clock" => clock(),
-                _ => stopwatch(font_path),
-            }
-        ,
-        None => ()
-    }
-
-    let (mut rl, thread) = raylib::init()
-        .size(WIDTH, HEIGHT)
-        .title("tima")
-        .build();
-
-    let font = rl.load_font(&thread, font_path).unwrap();
-
-    let mut scale = 400.0;
-    let font_size = 1;
-    let init = Local::now();
-
-    let mut cwid = rl.get_screen_width();
-    let mut chit = rl.get_screen_height();
-
-    let mut camera = ffi::Camera2D{
-        offset: ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32}, 
-        target: ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32},
-        rotation: 0.0,
-        zoom: 1.0
-    };
-
-    rl.set_target_fps(60);
-
+fn clock(mut rl: RaylibHandle, thread: RaylibThread, mut camera: ffi::Camera2D, mut scale: f64, font: Font, font_size: i32, mut cwid: i32, mut chit: i32){
     let mut vib_counter = 0;
-
     let mut color = Color::WHITE;
-
     while !rl.window_should_close() {
-        let thms = elapsedtime(init);
+        let local = Local::now();
+
+        let thms = elapsedtime(local);
 
         unsafe{
             if IsKeyDown(KeyboardKey::KEY_Q as i32){
@@ -124,13 +60,11 @@ fn main() {
             }
             if IsKeyDown(KeyboardKey::KEY_EQUAL as i32){
                 scale+=2.0;
-                //println!("{scale}");
             }
             if IsKeyDown(KeyboardKey::KEY_MINUS as i32){
                 if scale>5.0{
                     scale-=2.0;
                 }
-                //println!("{scale}");
             }
             if IsKeyDown(KeyboardKey::KEY_ZERO as i32){
                 scale = 400.0;
@@ -144,8 +78,8 @@ fn main() {
             }
         }
 
-        let twid = rl.measure_text(thms.as_str(), (font_size as f32 * scale) as i32);
-        let thi = (font_size as f32 * scale) as i32;
+        let twid = rl.measure_text(thms.as_str(), (font_size as f64 * scale) as i32);
+        let thi = (font_size as f64 * scale) as i32;
 
         cwid = rl.get_screen_width();
         chit = rl.get_screen_height();
@@ -168,9 +102,51 @@ fn main() {
         }
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::BLACK);
-        d.draw_text_ex(&font, thms.as_str(), pos, font_size as f32 * scale, 10.0, color);
+        d.draw_text_ex(&font, thms.as_str(), pos, font_size as f32 * scale as f32, 10.0, color);
         unsafe{
             ffi::EndMode2D();
         }
+    }
+}
+
+fn main() {
+    let args = env::args().collect::<Vec<_>>();
+    let mode = handle_args(&args);
+
+    let font_path = "/home/m1nus/.fonts/Monaco.ttf";
+
+    unsafe{
+        ffi::SetConfigFlags(ffi::ConfigFlags::FLAG_WINDOW_RESIZABLE as u32);
+    }
+
+    let (mut rl, thread) = raylib::init()
+        .size(WIDTH, HEIGHT)
+        .title("tima")
+        .build();
+
+    let font = rl.load_font(&thread, font_path).unwrap();
+    let scale = 400.0;
+    let font_size = 1;
+
+    let cwid = rl.get_screen_width();
+    let chit = rl.get_screen_height();
+
+    let camera = ffi::Camera2D{
+        offset: ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32}, 
+        target: ffi::Vector2{x:(cwid/2) as f32, y:(chit/2) as f32},
+        rotation: 0.0,
+        zoom: 1.0
+    };
+
+    rl.set_target_fps(60);
+
+    match mode{
+        Some(x) => 
+            match x.as_str(){
+                "clock" => clock(rl, thread, camera, scale, font, font_size, cwid, chit),
+                _ => stopwatch(font_path),
+            }
+        ,
+        None => ()
     }
 }
