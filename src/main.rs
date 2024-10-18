@@ -43,24 +43,27 @@ fn handle_args(args: &Vec<String>)->Option<String>{
 }
 
 fn stopwatch(font_path: &str){
-    let thms = elapsedtime(init);
+    //let thms = elapsedtime(init);
 }
 
 fn clock(){
-    let local = chrono::Local::now();
-    let ehours = local.hour();
-    let eminutes = local.minute();
-    let eseconds = local.second();
+    loop{
+        let local = chrono::Local::now();
+        let ehours = local.hour();
+        let eminutes = local.minute();
+        let eseconds = local.second();
 
-    let hdiv = (ehours/60) as u32;
-    let mdiv = (eminutes/60) as u32;
-    let sdiv = (eseconds/60) as u32;
+        let hdiv = (ehours/60) as u32;
+        let mdiv = (eminutes/60) as u32;
+        let sdiv = (eseconds/60) as u32;
 
-    let ohours = if (ehours - hdiv*60)<10{format!("0{}", ehours - hdiv*60)} else if hdiv>0{(ehours - hdiv*60).to_string()} else {ehours.to_string()};
-    let ominutes = if (eminutes - mdiv*60)<10{format!("0{}", eminutes - mdiv*60)} else if mdiv>0{(eminutes - mdiv*60).to_string()} else {eminutes.to_string()};
-    let oseconds = if (eseconds - sdiv*60)<10{format!("0{}", eseconds - sdiv*60)} else if sdiv>0{(eseconds - sdiv*60).to_string()} else {eseconds.to_string()};
+        let ohours = if (ehours - hdiv*60)<10{format!("0{}", ehours - hdiv*60)} else if hdiv>0{(ehours - hdiv*60).to_string()} else {ehours.to_string()};
+        let ominutes = if (eminutes - mdiv*60)<10{format!("0{}", eminutes - mdiv*60)} else if mdiv>0{(eminutes - mdiv*60).to_string()} else {eminutes.to_string()};
+        let oseconds = if (eseconds - sdiv*60)<10{format!("0{}", eseconds - sdiv*60)} else if sdiv>0{(eseconds - sdiv*60).to_string()} else {eseconds.to_string()};
 
-    let disptime = format!("{}:{}:{}", ohours, ominutes, oseconds);
+        let disptime = format!("{}:{}:{}", ohours, ominutes, oseconds);
+        println!("{disptime}");
+    }
 }
 
 fn main() {
