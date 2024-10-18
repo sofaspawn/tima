@@ -1,4 +1,4 @@
-use ffi::IsKeyDown;
+use ffi::{IsKeyDown, IsKeyPressed};
 use rand::Rng;
 use std::env;
 use raylib::prelude::*;
@@ -135,8 +135,12 @@ fn main() {
             if IsKeyDown(KeyboardKey::KEY_ZERO as i32){
                 scale = 400.0;
             }
-            if IsKeyDown(KeyboardKey::KEY_SPACE as i32){
-                color = Color::PINK;
+            if IsKeyPressed(KeyboardKey::KEY_SPACE as i32){
+                if color==Color::WHITE{
+                    color = Color::PINK;
+                } else if color==Color::PINK{
+                    color = Color::WHITE;
+                }
             }
         }
 
