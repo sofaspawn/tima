@@ -1,6 +1,6 @@
 use ffi::{IsKeyDown, IsKeyPressed};
 use rand::Rng;
-use std::env;
+use std::{env, thread, time};
 use raylib::prelude::*;
 use chrono::prelude::*;
 
@@ -42,8 +42,78 @@ fn handle_args(args: &Vec<String>)->Option<String>{
     }
 }
 
-fn stopwatch(font_path: &str){
-    //let thms = elapsedtime(init);
+fn secsformat(timeinframe: i32)->String{
+    let secs = timeinframe*60;
+    let minute = timeinframe/60;
+    let hour = timeinframe/3600;
+
+    format!("{hour}:{minute}:{secs}")
+}
+
+fn stopwatch(mut rl: RaylibHandle, thread: RaylibThread, mut camera: ffi::Camera2D, mut scale: f64, font: Font, font_size: i32, mut cwid: i32, mut chit: i32){
+    let mut vib_counter = 0;
+    let mut color = Color::WHITE;
+
+    let mut timeinframe = 0;
+
+    while !rl.window_should_close() {
+        //make the time format consistent i.e. 1 second should be shown as 01
+        let thms = secsformat(timeinframe);
+        timeinframe+=1;
+
+        unsafe{
+            if IsKeyDown(KeyboardKey::KEY_Q as i32){
+                break;
+            }
+            if IsKeyDown(KeyboardKey::KEY_EQUAL as i32){
+                scale+=2.0;
+            }
+            if IsKeyDown(KeyboardKey::KEY_MINUS as i32){
+                if scale>5.0{
+                    scale-=2.0;
+                }
+            }
+            if IsKeyDown(KeyboardKey::KEY_ZERO as i32){
+                scale = 400.0;
+            }
+            if IsKeyPressed(KeyboardKey::KEY_SPACE as i32){
+                if color==Color::WHITE{
+                    color = Color::PINK;
+                } else if color==Color::PINK{
+                    color = Color::WHITE;
+                }
+            }
+        }
+
+        let twid = rl.measure_text(thms.as_str(), (font_size as f64 * scale) as i32);
+        let thi = (font_size as f64 * scale) as i32;
+
+        cwid = rl.get_screen_width();
+        chit = rl.get_screen_height();
+
+        let mut pos = ffi::Vector2{
+            x:((cwid - twid)/2) as f32,
+            y:((chit-thi)/2) as f32,
+        };
+
+        timemvmnt(vib_counter, &mut pos);
+
+        camera.zoom = scale as f32;
+        camera.offset = pos;
+        camera.target = pos;
+
+        vib_counter+=1;
+
+        unsafe{
+            ffi::BeginMode2D(camera);
+        }
+        let mut d = rl.begin_drawing(&thread);
+        d.clear_background(Color::BLACK);
+        d.draw_text_ex(&font, thms.as_str(), pos, font_size as f32 * scale as f32, 10.0, color);
+        unsafe{
+            ffi::EndMode2D();
+        }
+    }
 }
 
 fn clock(mut rl: RaylibHandle, thread: RaylibThread, mut camera: ffi::Camera2D, mut scale: f64, font: Font, font_size: i32, mut cwid: i32, mut chit: i32){
@@ -51,8 +121,8 @@ fn clock(mut rl: RaylibHandle, thread: RaylibThread, mut camera: ffi::Camera2D, 
     let mut color = Color::WHITE;
     while !rl.window_should_close() {
         let local = Local::now();
-
-        let thms = elapsedtime(local);
+        //make the time format consistent i.e. 1 second should be shown as 01
+        let thms = format!("{}:{}:{}",local.hour(), local.minute(), local.second());
 
         unsafe{
             if IsKeyDown(KeyboardKey::KEY_Q as i32){
@@ -144,7 +214,7 @@ fn main() {
         Some(x) => 
             match x.as_str(){
                 "clock" => clock(rl, thread, camera, scale, font, font_size, cwid, chit),
-                _ => stopwatch(font_path),
+                _ => stopwatch(rl, thread, camera, scale, font, font_size, cwid, chit),
             }
         ,
         None => ()
