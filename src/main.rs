@@ -2,10 +2,11 @@ use chrono::prelude::*;
 use ffi::{IsKeyDown, IsKeyPressed};
 use rand::Rng;
 use raylib::prelude::*;
-use std::{env, thread, time};
+use std::env;
 
 const WIDTH: i32 = 2000;
 const HEIGHT: i32 = 1000;
+const FPS: u32 = 60;
 
 fn _elapsedtime(anchor: DateTime<Local>) -> String {
     let elapsed = Local::now() - anchor;
@@ -62,9 +63,9 @@ fn handle_args(args: &Vec<String>) -> Option<String> {
 }
 
 fn secsformat(timeinframe: i32) -> String {
-    let secs = timeinframe % 60;
-    let min = timeinframe / 60;
-    let hour = timeinframe / 3600;
+    let secs = timeinframe / (FPS as i32);
+    let min = secs / 60;
+    let hour = secs / 3600;
 
     let osecs = if secs < 10 {
         format!("0{}", secs)
@@ -229,6 +230,7 @@ fn clock(
         unsafe {
             ffi::BeginMode2D(camera);
         }
+
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::BLACK);
         d.draw_text_ex(
@@ -277,7 +279,7 @@ fn main() {
         zoom: 1.0,
     };
 
-    rl.set_target_fps(60);
+    rl.set_target_fps(FPS);
 
     match mode {
         Some(x) => match x.as_str() {
