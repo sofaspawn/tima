@@ -7,7 +7,7 @@ use chrono::prelude::*;
 const WIDTH:i32 = 2000;
 const HEIGHT:i32 = 1000;
 
-fn elapsedtime(anchor: DateTime<Local>)->String{
+fn _elapsedtime(anchor: DateTime<Local>)->String{
     let elapsed = Local::now() - anchor;
     let ehours = elapsed.num_hours();
     let eminutes = elapsed.num_minutes();
@@ -43,11 +43,15 @@ fn handle_args(args: &Vec<String>)->Option<String>{
 }
 
 fn secsformat(timeinframe: i32)->String{
-    let secs = timeinframe*60;
-    let minute = timeinframe/60;
+    let secs = timeinframe%60;
+    let min = timeinframe/60;
     let hour = timeinframe/3600;
 
-    format!("{hour}:{minute}:{secs}")
+    let osecs = if secs<10{format!("0{}",secs)}else{format!("{secs}")};
+    let omin = if min<10{format!("0{}",min)}else{format!("{min}")};
+    let ohour = if hour<10{format!("0{}",hour)}else{format!("{hour}")};
+
+    format!("{ohour}:{omin}:{osecs}")
 }
 
 fn stopwatch(mut rl: RaylibHandle, thread: RaylibThread, mut camera: ffi::Camera2D, mut scale: f64, font: Font, font_size: i32, mut cwid: i32, mut chit: i32){
