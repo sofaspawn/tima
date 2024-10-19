@@ -10,6 +10,7 @@ TODO:
 - [x] display clock
 - [x] change mode based on user args
 - [x] change color space
-- [ ] display clock on raylib window
+- [x] display clock on raylib window
+- [ ] improve the stopwatch implementation
 
 inspired by -> [tsoding's sowon](https://github.com/tsoding/sowon)
