@@ -8,41 +8,6 @@ const WIDTH: i32 = 2000;
 const HEIGHT: i32 = 1000;
 const FPS: u32 = 60;
 
-fn _elapsedtime(anchor: DateTime<Local>) -> String {
-    let elapsed = Local::now() - anchor;
-    let ehours = elapsed.num_hours();
-    let eminutes = elapsed.num_minutes();
-    let eseconds = elapsed.num_seconds();
-
-    let hdiv = (ehours / 60) as i64;
-    let mdiv = (eminutes / 60) as i64;
-    let sdiv = (eseconds / 60) as i64;
-
-    let ohours = if (ehours - hdiv * 60) < 10 {
-        format!("0{}", ehours - hdiv * 60)
-    } else if hdiv > 0 {
-        (ehours - hdiv * 60).to_string()
-    } else {
-        ehours.to_string()
-    };
-    let ominutes = if (eminutes - mdiv * 60) < 10 {
-        format!("0{}", eminutes - mdiv * 60)
-    } else if mdiv > 0 {
-        (eminutes - mdiv * 60).to_string()
-    } else {
-        eminutes.to_string()
-    };
-    let oseconds = if (eseconds - sdiv * 60) < 10 {
-        format!("0{}", eseconds - sdiv * 60)
-    } else if sdiv > 0 {
-        (eseconds - sdiv * 60).to_string()
-    } else {
-        eseconds.to_string()
-    };
-
-    format!("{}:{}:{}", ohours, ominutes, oseconds)
-}
-
 fn timemvmnt(counter: i32, pos: &mut ffi::Vector2) {
     //agressive shaking
     if counter % 1 == 0 {
@@ -67,18 +32,26 @@ fn secsformat(timeinframe: i32) -> String {
     let min = secs / 60;
     let hour = secs / 3600;
 
-    let osecs = if secs < 10 {
-        format!("0{}", secs)
+    let osecs = if secs - 60 * (secs/60) < 10 {
+        format!("0{}", secs - 60 * (secs/60))
+    } else if secs>=60{
+        format!("{}", secs - 60 * (secs/60))
     } else {
         format!("{secs}")
     };
-    let omin = if min < 10 {
-        format!("0{}", min)
+
+    let omin = if min - 60 * (min/60) < 10 {
+        format!("0{}", min - 60 * (min/60))
+    } else if min>=60{
+        format!("{}", min - 60 * (min/60))
     } else {
         format!("{min}")
     };
-    let ohour = if hour < 10 {
-        format!("0{}", hour)
+
+    let ohour = if hour - 60 * (hour/60) < 10 {
+        format!("0{}", hour - 60 * (hour/60))
+    } else if hour>=60{
+        format!("{}", hour - 60 * (hour/60))
     } else {
         format!("{hour}")
     };
