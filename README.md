@@ -13,5 +13,7 @@ TODO:
 - [x] display clock on raylib window
 - [x] improve the stopwatch implementation
 - [x] stopwatch perfection
+- [ ] clean the code
+- [ ] make a timer
 
 inspired by -> [tsoding's sowon](https://github.com/tsoding/sowon)
