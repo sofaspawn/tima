@@ -141,6 +141,7 @@ fn stopwatch(
 }
 
 fn timer(
+    time: u32,
     mut rl: RaylibHandle,
     thread: RaylibThread,
     mut camera: ffi::Camera2D,
@@ -338,7 +339,7 @@ fn main() {
     match mode {
         Some(x) => match x.as_str() {
             "clock" => clock(rl, thread, camera, scale, font, font_size, cwid, chit),
-            "timer" => timer(rl, thread, camera, scale, font, font_size, cwid, chit),
+            "timer" => {let time=20; timer(time, rl, thread, camera, scale, font, font_size, cwid, chit)},
             _ => stopwatch(rl, thread, camera, scale, font, font_size, cwid, chit),
         },
         None => (),
