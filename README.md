@@ -12,6 +12,6 @@ TODO:
 - [x] change color space
 - [x] display clock on raylib window
 - [x] improve the stopwatch implementation
-- [ ] stopwatch perfection
+- [x] stopwatch perfection
 
 inspired by -> [tsoding's sowon](https://github.com/tsoding/sowon)
