@@ -94,6 +94,7 @@ fn stopwatch(
                 scale = 400.0;
             }
             if IsKeyPressed(KeyboardKey::KEY_SPACE as i32) {
+                let temp = timeinframe;
                 if color == Color::WHITE {
                     color = Color::PINK;
                 } else if color == Color::PINK {
@@ -141,7 +142,7 @@ fn stopwatch(
 }
 
 fn timer(
-    time: u32,
+    time: i32,
     mut rl: RaylibHandle,
     thread: RaylibThread,
     mut camera: ffi::Camera2D,
@@ -154,11 +155,15 @@ fn timer(
     let mut vib_counter = 0;
     let mut color = Color::WHITE;
 
-    let mut timeinframe = 0;
+    let mut timeinframe = time*FPS as i32 + FPS as i32;
 
     while !rl.window_should_close() {
+        if timeinframe<0{
+            timeinframe=0;
+            color = Color::REBECCAPURPLE;
+        }
         let thms = secsformat(timeinframe);
-        timeinframe += 1;
+        timeinframe -= 1;
 
         unsafe {
             if IsKeyDown(KeyboardKey::KEY_Q as i32) {
@@ -339,7 +344,7 @@ fn main() {
     match mode {
         Some(x) => match x.as_str() {
             "clock" => clock(rl, thread, camera, scale, font, font_size, cwid, chit),
-            "timer" => {let time=20; timer(time, rl, thread, camera, scale, font, font_size, cwid, chit)},
+            "timer" => {let time:i32=20; timer(time, rl, thread, camera, scale, font, font_size, cwid, chit)},
             _ => stopwatch(rl, thread, camera, scale, font, font_size, cwid, chit),
         },
         None => (),
