@@ -14,6 +14,8 @@ TODO:
 - [x] improve the stopwatch implementation
 - [x] stopwatch perfection
 - [ ] improve the clock formatting
-- [ ] make a timer
+- [x] make a timer
+- [ ] make the timer and stopwatch stop on pressing space
+- [ ] load custom fonts from png file
 
 inspired by -> [tsoding's sowon](https://github.com/tsoding/sowon)

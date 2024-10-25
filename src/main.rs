@@ -156,6 +156,8 @@ fn timer(
     let mut color = Color::WHITE;
 
     let mut timeinframe = time*FPS as i32 + FPS as i32;
+    let mut pause = false;
+    let mut pausetime = 0;
 
     while !rl.window_should_close() {
         if timeinframe<0{
@@ -181,6 +183,10 @@ fn timer(
                 scale = 400.0;
             }
             if IsKeyPressed(KeyboardKey::KEY_SPACE as i32) {
+                pause = !pause;
+                if pause{
+                    pausetime = timeinframe;
+                }
                 if color == Color::WHITE {
                     color = Color::PINK;
                 } else if color == Color::PINK {
